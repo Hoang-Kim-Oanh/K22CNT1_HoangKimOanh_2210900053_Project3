@@ -17,14 +17,7 @@
                         <label for="sodienthoai" class="form-label text-white">Số điện thoại</label>
                         <input type="tel" class="form-control" id="sodienthoai" name="sodienthoai" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="bandangla" class="form-label text-white">Bạn đang là</label>
-                        <select class="form-select" id="bandangla" name="bandangla" required>
-                            <option value="hocsinh">Học sinh</option>
-                            <option value="sinhvien">Sinh viên</option>
-                            <option value="nguoilamviec">Người làm việc</option>
-                        </select>
-                    </div>
+
                     <div class="mb-3">
                         <label for="cauhoi" class="form-label text-white">Câu hỏi tư vấn</label>
                         <input type="text" class="form-control" id="cauhoi" name="cauhoi" required>
