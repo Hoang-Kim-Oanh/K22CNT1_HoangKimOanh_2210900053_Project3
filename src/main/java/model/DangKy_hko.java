@@ -1,20 +1,22 @@
 package model;
 
+import java.sql.Timestamp;
+
 public class DangKy_hko {
     private int maKhachDangKy;
     private String hoTen;
     private String soDienThoai;
     private String trangThai;
     private String khoaHoc;
-    private String ngayDangKy;
+    private Timestamp ngayDangKy;
 
     public DangKy_hko() {
     }
 
-    public DangKy_hko(int maKhachDangKy, String hoTen, String soDienThoai, String trangThai, String khoaHoc, String ngayDangKy) {
+    public DangKy_hko(int maKhachDangKy, String hoTen, String soDienThoai, String trangThai, String khoaHoc, Timestamp ngayDangKy) {
         this.maKhachDangKy = maKhachDangKy;
-        this.hoTen = hoTen;
-        this.soDienThoai = soDienThoai;
+        setHoTen(hoTen);
+        setSoDienThoai(soDienThoai);
         this.trangThai = trangThai;
         this.khoaHoc = khoaHoc;
         this.ngayDangKy = ngayDangKy;
@@ -33,6 +35,9 @@ public class DangKy_hko {
     }
 
     public void setHoTen(String hoTen) {
+        if (hoTen == null || hoTen.trim().isEmpty()) {
+            throw new IllegalArgumentException("Họ tên không được để trống");
+        }
         this.hoTen = hoTen;
     }
 
@@ -41,7 +46,13 @@ public class DangKy_hko {
     }
 
     public void setSoDienThoai(String soDienThoai) {
-        this.soDienThoai = soDienThoai;
+        if (soDienThoai == null || soDienThoai.trim().isEmpty()) {
+            this.soDienThoai = "Chưa cập nhật"; // Default value for null or empty
+        } else if (soDienThoai.length() < 9 || soDienThoai.length() > 15) {
+            throw new IllegalArgumentException("Số điện thoại phải có từ 9 đến 15 ký tự");
+        } else {
+            this.soDienThoai = soDienThoai;
+        }
     }
 
     public String getTrangThai() {
@@ -60,11 +71,23 @@ public class DangKy_hko {
         this.khoaHoc = khoaHoc;
     }
 
-    public String getNgayDangKy() {
+    public Timestamp getNgayDangKy() {
         return ngayDangKy;
     }
 
-    public void setNgayDangKy(String ngayDangKy) {
+    public void setNgayDangKy(Timestamp ngayDangKy) {
         this.ngayDangKy = ngayDangKy;
+    }
+
+    @Override
+    public String toString() {
+        return "DangKy_hko{" +
+                "maKhachDangKy=" + maKhachDangKy +
+                ", hoTen='" + hoTen + '\'' +
+                ", soDienThoai='" + soDienThoai + '\'' +
+                ", trangThai='" + trangThai + '\'' +
+                ", khoaHoc='" + khoaHoc + '\'' +
+                ", ngayDangKy=" + ngayDangKy +
+                '}';
     }
 }

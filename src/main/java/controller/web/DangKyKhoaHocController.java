@@ -29,17 +29,16 @@ public class DangKyKhoaHocController extends HttpServlet {
         String soDienThoai = request.getParameter("sodienthoai");
         String banDangLa = request.getParameter("bandangla");
         String mucTieuIELTS = request.getParameter("muctieuIELTS");
-        String ngayDangKy = java.time.LocalDate.now().toString();
 
-        // Tạo đối tượng DangKy_hko
+        // Create a DangKy_hko object
         DangKy_hko dangKy = new DangKy_hko();
         dangKy.setHoTen(hoTen);
         dangKy.setSoDienThoai(soDienThoai);
         dangKy.setTrangThai(banDangLa);
         dangKy.setKhoaHoc("Khóa 0 - 7.0 IELTS (" + mucTieuIELTS + ")");
-        dangKy.setNgayDangKy(ngayDangKy);
+        // Note: Not setting ngayDangKy; let the database default to CURRENT_TIMESTAMP
 
-        // Lưu vào database
+        // Save to database
         try {
             if (saveDangKy(dangKy)) {
                 response.getWriter().write("<script type='text/javascript'>alert('Đăng ký khóa học thành công!'); window.location.href='home';</script>");
@@ -56,7 +55,8 @@ public class DangKyKhoaHocController extends HttpServlet {
         InitialContext ctx = new InitialContext();
         DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/HoangKimOanh_2210900053");
 
-        String sql = "INSERT INTO DangKy_hko (hoTen, soDienThoai, trangThai, khoaHoc, ngayDangKy) VALUES (?, ?, ?, ?, ?)";
+        // Exclude NGAYDANGKY; let the database set the default value
+        String sql = "INSERT INTO dangky_hko (HOTEN, SODIENTHOAI, TRANGTHAI, KHOAHOC) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = ds.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -65,7 +65,6 @@ public class DangKyKhoaHocController extends HttpServlet {
             ps.setString(2, dangKy.getSoDienThoai());
             ps.setString(3, dangKy.getTrangThai());
             ps.setString(4, dangKy.getKhoaHoc());
-            ps.setString(5, dangKy.getNgayDangKy());
 
             return ps.executeUpdate() > 0;
         }

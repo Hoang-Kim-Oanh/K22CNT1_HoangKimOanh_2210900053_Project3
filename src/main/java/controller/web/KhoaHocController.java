@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -44,7 +45,7 @@ public class KhoaHocController extends HttpServlet {
                 khoaHoc.setTenKhoaHoc(rs.getString("TenKhoaHoc"));
                 khoaHoc.setMoTa(rs.getString("MoTa"));
                 khoaHoc.setTrinhDo(rs.getString("TrinhDo"));
-                khoaHoc.setHocPhi(rs.getDouble("HocPhi"));
+                khoaHoc.setHocPhi(BigDecimal.valueOf(rs.getDouble("HocPhi")));
                 khoaHoc.setThoiGianHoc(rs.getString("ThoiGianHoc"));
                 danhSachKhoaHoc.add(khoaHoc);
             }

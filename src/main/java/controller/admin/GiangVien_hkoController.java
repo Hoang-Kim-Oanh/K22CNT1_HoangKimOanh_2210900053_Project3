@@ -1,169 +1,153 @@
 package controller.admin;
 
 import model.GiangVien_hko;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet("/admin/teachers")
+@WebServlet("/giangvien")
 public class GiangVien_hkoController extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private DataSource dataSource;
-
-    @Override
-    public void init() throws ServletException {
-        try {
-            InitialContext ctx = new InitialContext();
-            dataSource = (DataSource) ctx.lookup("java:comp/env/jdbc/HoangKimOanh_2210900053");
-        } catch (NamingException e) {
-            throw new ServletException("Cannot initialize DataSource", e);
-        }
-    }
-
-    protected Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action");
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
 
+        String action = request.getParameter("action");
         if ("delete".equals(action)) {
-            int maGiangVien = Integer.parseInt(request.getParameter("maGiangVien"));
-            deleteGiangVien(maGiangVien);
-            response.sendRedirect(request.getContextPath() + "/admin/teachers");
-        } else if ("edit".equals(action)) {
-            int maGiangVien = Integer.parseInt(request.getParameter("maGiangVien"));
-            GiangVien_hko gv = selectGiangVienByMa(maGiangVien);
-            request.setAttribute("giangVien", gv);
-            request.getRequestDispatcher("/views/admin/hko_editTeacher.jsp").forward(request, response);
+            deleteGiangVien(request, response);
         } else {
-            List<GiangVien_hko> danhSachGiangVien = selectAllGiangVien();
-            request.setAttribute("danhSachGiangVien", danhSachGiangVien);
-            request.getRequestDispatcher("/views/admin/hko_quanlygiangvien.jsp").forward(request, response);
+            getAllGiangVien(request, response);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
         String action = request.getParameter("action");
-
         if ("add".equals(action)) {
-            int maGiangVien = Integer.parseInt(request.getParameter("maGiangVien"));
-            String tenGiangVien = request.getParameter("tenGiangVien");
-            String email = request.getParameter("email");
-            String soDienThoai = request.getParameter("soDienThoai");
-            String chuyenMon = request.getParameter("chuyenMon");
-
-            insertGiangVien(new GiangVien_hko(maGiangVien, tenGiangVien, email, soDienThoai, chuyenMon));
-            response.sendRedirect(request.getContextPath() + "/admin/teachers");
-        } else if ("edit".equals(action)) {
-            int maGiangVien = Integer.parseInt(request.getParameter("maGiangVien"));
-            String tenGiangVien = request.getParameter("tenGiangVien");
-            String email = request.getParameter("email");
-            String soDienThoai = request.getParameter("soDienThoai");
-            String chuyenMon = request.getParameter("chuyenMon");
-
-            updateGiangVien(maGiangVien, tenGiangVien, email, soDienThoai, chuyenMon);
-            response.sendRedirect(request.getContextPath() + "/admin/teachers");
+            addGiangVien(request, response);
+        } else if ("update".equals(action)) {
+            updateGiangVien(request, response);
         }
     }
 
-    private List<GiangVien_hko> selectAllGiangVien() {
-        List<GiangVien_hko> giangVienList = new ArrayList<>();
-        String SELECT_ALL_SQL = "SELECT * FROM giangvien_hko";
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_SQL);
-             ResultSet rs = preparedStatement.executeQuery()) {
+    private void getAllGiangVien(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<GiangVien_hko> danhSachGiangVien = new ArrayList<>();
+        try {
+            Connection conn = getConnection();
+            String sql = "SELECT * FROM GiangVien_hko";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery();
+
             while (rs.next()) {
-                GiangVien_hko gv = new GiangVien_hko(
-                        rs.getInt("maGiangVien"),
-                        rs.getString("tenGiangVien"),
-                        rs.getString("email"),
-                        rs.getString("soDienThoai"),
-                        rs.getString("chuyenMon")
-                );
-                giangVienList.add(gv);
+                GiangVien_hko giangVien = new GiangVien_hko();
+                giangVien.setMaGiangVien(rs.getInt("MaGiangVien"));
+                giangVien.setTenGiangVien(rs.getString("TenGiangVien"));
+                giangVien.setEmail(rs.getString("Email"));
+                giangVien.setSoDienThoai(rs.getString("SoDienThoai"));
+                giangVien.setChuyenMon(rs.getString("ChuyenMon"));
+                danhSachGiangVien.add(giangVien);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return giangVienList;
-    }
 
-    private GiangVien_hko selectGiangVienByMa(int maGiangVien) {
-        String SELECT_SQL = "SELECT * FROM giangvien_hko WHERE maGiangVien = ?";
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_SQL)) {
-            preparedStatement.setInt(1, maGiangVien);
-            ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                return new GiangVien_hko(
-                        rs.getInt("maGiangVien"),
-                        rs.getString("tenGiangVien"),
-                        rs.getString("email"),
-                        rs.getString("soDienThoai"),
-                        rs.getString("chuyenMon")
-                );
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+            rs.close();
+            pstmt.close();
+            conn.close();
 
-    private void insertGiangVien(GiangVien_hko gv) {
-        String INSERT_SQL = "INSERT INTO giangvien_hko (maGiangVien, tenGiangVien, email, soDienThoai, chuyenMon) VALUES (?, ?, ?, ?, ?)";
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL)) {
-            preparedStatement.setInt(1, gv.getMaGiangVien());
-            preparedStatement.setString(2, gv.getTenGiangVien());
-            preparedStatement.setString(3, gv.getEmail());
-            preparedStatement.setString(4, gv.getSoDienThoai());
-            preparedStatement.setString(5, gv.getChuyenMon());
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
+            request.setAttribute("danhSachGiangVien", danhSachGiangVien);
+            request.getRequestDispatcher("/views/admin/hko_quanlygiangvien.jsp").forward(request, response);
+        } catch (Exception e) {
             e.printStackTrace();
+            throw new ServletException("Lỗi khi lấy danh sách giảng viên", e);
         }
     }
 
-    private void updateGiangVien(int maGiangVien, String tenGiangVien, String email, String soDienThoai, String chuyenMon) {
-        String UPDATE_SQL = "UPDATE giangvien_hko SET tenGiangVien = ?, email = ?, soDienThoai = ?, chuyenMon = ? WHERE maGiangVien = ?";
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
-            preparedStatement.setString(1, tenGiangVien);
-            preparedStatement.setString(2, email);
-            preparedStatement.setString(3, soDienThoai);
-            preparedStatement.setString(4, chuyenMon);
-            preparedStatement.setInt(5, maGiangVien);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
+    private void addGiangVien(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            Connection conn = getConnection();
+            String sql = "INSERT INTO GiangVien_hko (TenGiangVien, Email, SoDienThoai, ChuyenMon) VALUES (?, ?, ?, ?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, request.getParameter("tenGiangVien"));
+            pstmt.setString(2, request.getParameter("email"));
+            pstmt.setString(3, request.getParameter("soDienThoai"));
+            pstmt.setString(4, request.getParameter("chuyenMon"));
+
+            pstmt.executeUpdate();
+            pstmt.close();
+            conn.close();
+
+            response.sendRedirect("giangvien");
+        } catch (Exception e) {
             e.printStackTrace();
+            request.setAttribute("error", "Lỗi khi thêm giảng viên.");
+            getAllGiangVien(request, response);
         }
     }
 
-    private void deleteGiangVien(int maGiangVien) {
-        String DELETE_SQL = "DELETE FROM giangvien_hko WHERE maGiangVien = ?";
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL)) {
-            preparedStatement.setInt(1, maGiangVien);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
+    private void updateGiangVien(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            Connection conn = getConnection();
+            String sql = "UPDATE GiangVien_hko SET TenGiangVien=?, Email=?, SoDienThoai=?, ChuyenMon=? WHERE MaGiangVien=?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, request.getParameter("tenGiangVien"));
+            pstmt.setString(2, request.getParameter("email"));
+            pstmt.setString(3, request.getParameter("soDienThoai"));
+            pstmt.setString(4, request.getParameter("chuyenMon"));
+            pstmt.setInt(5, Integer.parseInt(request.getParameter("maGiangVien")));
+
+            pstmt.executeUpdate();
+            pstmt.close();
+            conn.close();
+
+            response.sendRedirect("giangvien");
+        } catch (Exception e) {
             e.printStackTrace();
+            request.setAttribute("error", "Lỗi khi cập nhật giảng viên.");
+            getAllGiangVien(request, response);
         }
+    }
+
+    private void deleteGiangVien(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            Connection conn = getConnection();
+            String sql = "DELETE FROM GiangVien_hko WHERE MaGiangVien=?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, Integer.parseInt(request.getParameter("maGiangVien")));
+
+            pstmt.executeUpdate();
+            pstmt.close();
+            conn.close();
+
+            response.sendRedirect("giangvien");
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Lỗi khi xóa giảng viên.");
+            getAllGiangVien(request, response);
+        }
+    }
+
+    private Connection getConnection() throws Exception {
+        InitialContext ctx = new InitialContext();
+        DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/HoangKimOanh_2210900053");
+        return ds.getConnection();
     }
 }

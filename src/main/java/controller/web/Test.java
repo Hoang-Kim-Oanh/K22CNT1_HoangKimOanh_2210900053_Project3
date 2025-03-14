@@ -17,7 +17,7 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 // Annotation để ánh xạ URL
-@WebServlet("/giangvien")
+@WebServlet("/giangvienn")
 public class Test extends HttpServlet {
     private static final long serialVersionUID = 1L;
 

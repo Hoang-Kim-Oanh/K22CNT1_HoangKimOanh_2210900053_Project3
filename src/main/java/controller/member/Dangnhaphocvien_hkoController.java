@@ -1,6 +1,7 @@
 package controller.member;
 
 import model.HocVien_hko;
+import model.HocVien_hko.GioiTinh;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -16,6 +17,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.math.BigDecimal;
+import java.sql.Date;
 
 @WebServlet("/dangnhaphocvien")
 public class Dangnhaphocvien_hkoController extends HttpServlet {
@@ -76,15 +79,26 @@ public class Dangnhaphocvien_hkoController extends HttpServlet {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
+                    // Convert String to java.sql.Date
+                    String ngaySinhStr = rs.getString("NgaySinh");
+                    Date ngaySinh = ngaySinhStr != null ? Date.valueOf(ngaySinhStr) : null;
+
+                    // Convert String to GioiTinh enum
+                    String gioiTinhStr = rs.getString("GioiTinh");
+                    GioiTinh gioiTinh = gioiTinhStr != null ? GioiTinh.valueOf(gioiTinhStr) : null;
+
+                    // Convert to BigDecimal
+                    BigDecimal diemSo = rs.getBigDecimal("DiemSo");
+
                     return new HocVien_hko(
                             rs.getInt("MaHocVien"),
                             rs.getString("TenHocVien"),
-                            rs.getString("NgaySinh"),
-                            rs.getString("GioiTinh"),
+                            ngaySinh,
+                            gioiTinh,
                             rs.getString("DiaChi"),
                             rs.getString("Email"),
                             rs.getString("LichHoc"),
-                            rs.getDouble("DiemSo"),
+                            diemSo,
                             rs.getString("matKhau")
                     );
                 }
