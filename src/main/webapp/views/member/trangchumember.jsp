@@ -31,6 +31,7 @@
         <div class="col-md-3 bg-dark text-white vh-100 p-4">
             <h5 class="fw-bold border-bottom pb-2">${tenHocVien}</h5>
             <p class="small">Mã Học Viên: ${maHocVien}</p>
+            <p class="small">Khóa Học: ${maKhoaHoc}</p>
             <p class="small">Ngày sinh: ${ngaySinh}</p>
             <p class="small">Giới tính: ${gioiTinh}</p>
             <p class="small">Địa Chỉ: ${diaChi}</p>

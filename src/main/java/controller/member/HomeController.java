@@ -28,6 +28,7 @@ public class HomeController extends HttpServlet {
         HocVien_hko hocVien = (HocVien_hko) session.getAttribute("hocVien"); // Đổi sang HocVien_hko
         request.setAttribute("tenHocVien", hocVien.getTenHocVien());
         request.setAttribute("maHocVien", hocVien.getMaHocVien());
+        request.setAttribute("maKhoaHoc", hocVien.getMaKhoaHoc());
         request.setAttribute("ngaySinh", hocVien.getNgaySinh());
         request.setAttribute("diaChi", hocVien.getDiaChi());
         request.setAttribute("email", hocVien.getEmail());

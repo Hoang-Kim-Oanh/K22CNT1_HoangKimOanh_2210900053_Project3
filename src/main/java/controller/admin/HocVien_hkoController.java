@@ -71,6 +71,7 @@ public class HocVien_hkoController extends HttpServlet {
                 hocVien.setLichHoc(rs.getString("LichHoc"));
                 hocVien.setDiemSo(rs.getBigDecimal("DiemSo"));
                 hocVien.setMatKhau(rs.getString("MatKhau"));
+                hocVien.setMaKhoaHoc(rs.getInt("MaKhoaHoc"));
                 danhSachHocVien.add(hocVien);
             }
             request.setAttribute("danhSachHocVien", danhSachHocVien);
@@ -85,8 +86,8 @@ public class HocVien_hkoController extends HttpServlet {
             throws ServletException, IOException {
         try {
             Connection conn = getConnection();
-            String sql = "INSERT INTO HocVien_hko (TenHocVien, NgaySinh, GioiTinh, DiaChi, Email, LichHoc, DiemSo, MatKhau) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO HocVien_hko (TenHocVien, NgaySinh, GioiTinh, DiaChi, Email, LichHoc, DiemSo, MatKhau, MaKhoaHoc) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, request.getParameter("tenHocVien"));
             pstmt.setDate(2, Date.valueOf(request.getParameter("ngaySinh")));
@@ -96,9 +97,9 @@ public class HocVien_hkoController extends HttpServlet {
             pstmt.setString(6, request.getParameter("lichHoc"));
             pstmt.setBigDecimal(7, new BigDecimal(request.getParameter("diemSo")));
             pstmt.setString(8, request.getParameter("matKhau"));
+            pstmt.setInt(9, Integer.parseInt(request.getParameter("maKhoaHoc")));
 
             pstmt.executeUpdate();
-            pstmt.close();
             conn.close();
             response.sendRedirect("hocvien");
         } catch (Exception e) {
@@ -112,8 +113,7 @@ public class HocVien_hkoController extends HttpServlet {
             throws ServletException, IOException {
         try {
             Connection conn = getConnection();
-            String sql = "UPDATE HocVien_hko SET TenHocVien=?, NgaySinh=?, GioiTinh=?, DiaChi=?, Email=?, LichHoc=?, DiemSo=?, MatKhau=? " +
-                    "WHERE MaHocVien=?";
+            String sql = "UPDATE HocVien_hko SET TenHocVien=?, NgaySinh=?, GioiTinh=?, DiaChi=?, Email=?, LichHoc=?, DiemSo=?, MatKhau=?, MaKhoaHoc=? WHERE MaHocVien=?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, request.getParameter("tenHocVien"));
             pstmt.setDate(2, Date.valueOf(request.getParameter("ngaySinh")));
@@ -123,10 +123,10 @@ public class HocVien_hkoController extends HttpServlet {
             pstmt.setString(6, request.getParameter("lichHoc"));
             pstmt.setBigDecimal(7, new BigDecimal(request.getParameter("diemSo")));
             pstmt.setString(8, request.getParameter("matKhau"));
-            pstmt.setInt(9, Integer.parseInt(request.getParameter("maHocVien")));
+            pstmt.setInt(9, Integer.parseInt(request.getParameter("maKhoaHoc")));
+            pstmt.setInt(10, Integer.parseInt(request.getParameter("maHocVien")));
 
             pstmt.executeUpdate();
-            pstmt.close();
             conn.close();
             response.sendRedirect("hocvien");
         } catch (Exception e) {

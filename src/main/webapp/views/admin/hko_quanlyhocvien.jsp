@@ -25,12 +25,12 @@
     <div class="container-fluid p-4" style="margin-left: 250px;">
         <h2 class="text-center mb-4">Quản Lý Học Viên</h2>
 
-        <%-- Error message --%>
+        <%-- Hiển thị lỗi nếu có --%>
         <c:if test="${not empty error}">
             <div class="alert alert-danger" role="alert">${error}</div>
         </c:if>
 
-        <%-- Form --%>
+        <%-- Form thêm và cập nhật học viên --%>
         <div class="card mb-4">
             <div class="card-header bg-primary text-white">Thêm / Cập Nhật Học Viên</div>
             <div class="card-body">
@@ -71,6 +71,10 @@
                         <input type="number" step="0.01" class="form-control" name="diemSo" id="diemSo" required>
                     </div>
                     <div class="mb-3">
+                        <label class="form-label">Mã Khóa Học</label>
+                        <input type="text" class="form-control" name="maKhoaHoc" id="maKhoaHoc" required>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">Mật Khẩu</label>
                         <input type="password" class="form-control" name="matKhau" id="matKhau" required>
                     </div>
@@ -80,7 +84,7 @@
             </div>
         </div>
 
-        <%-- Table --%>
+        <%-- Danh sách học viên --%>
         <table class="table table-striped table-hover">
             <thead class="table-dark">
             <tr>
@@ -92,6 +96,7 @@
                 <th>Email</th>
                 <th>Lịch Học</th>
                 <th>Điểm</th>
+                <th>Mã Khóa Học</th>
                 <th>Hành Động</th>
             </tr>
             </thead>
@@ -106,20 +111,13 @@
                     <td>${hocVien.email}</td>
                     <td>${hocVien.lichHoc}</td>
                     <td>${hocVien.diemSo}</td>
+                    <td>${hocVien.maKhoaHoc}</td>
                     <td>
-                        <button class="btn btn-warning btn-sm" onclick="editHocVien('${hocVien.maHocVien}',
-                                '${hocVien.tenHocVien}', '${hocVien.ngaySinh}', '${hocVien.gioiTinh}',
-                                '${hocVien.diaChi}', '${hocVien.email}', '${hocVien.lichHoc}', '${hocVien.diemSo}',
-                                '${hocVien.matKhau}')">Sửa</button>
-                        <a href="hocvien?action=delete&maHocVien=${hocVien.maHocVien}"
-                           class="btn btn-danger btn-sm"
-                           onclick="return confirm('Bạn có chắc muốn xóa không?')">Xóa</a>
+                        <button class="btn btn-warning btn-sm" onclick="editHocVien('${hocVien.maHocVien}', '${hocVien.tenHocVien}', '${hocVien.ngaySinh}', '${hocVien.gioiTinh}', '${hocVien.diaChi}', '${hocVien.email}', '${hocVien.lichHoc}', '${hocVien.diemSo}', '${hocVien.maKhoaHoc}', '${hocVien.matKhau}')">Sửa</button>
+                        <a href="hocvien?action=delete&maHocVien=${hocVien.maHocVien}" class="btn btn-danger btn-sm" onclick="return confirm('Xóa học viên này?')">Xóa</a>
                     </td>
                 </tr>
             </c:forEach>
-            <c:if test="${empty danhSachHocVien}">
-                <tr><td colspan="9" class="text-center">Không có học viên nào.</td></tr>
-            </c:if>
             </tbody>
         </table>
     </div>
@@ -127,7 +125,7 @@
 <jsp:include page="footer.jsp"></jsp:include>
 
 <script>
-    function editHocVien(maHocVien, tenHocVien, ngaySinh, gioiTinh, diaChi, email, lichHoc, diemSo, matKhau) {
+    function editHocVien(maHocVien, tenHocVien, ngaySinh, gioiTinh, diaChi, email, lichHoc, diemSo, maKhoaHoc, matKhau) {
         document.getElementById('maHocVien').value = maHocVien;
         document.getElementById('tenHocVien').value = tenHocVien;
         document.getElementById('ngaySinh').value = ngaySinh;
@@ -136,10 +134,10 @@
         document.getElementById('email').value = email;
         document.getElementById('lichHoc').value = lichHoc;
         document.getElementById('diemSo').value = diemSo;
+        document.getElementById('maKhoaHoc').value = maKhoaHoc;
         document.getElementById('matKhau').value = matKhau;
         document.getElementById('action').value = "update";
     }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

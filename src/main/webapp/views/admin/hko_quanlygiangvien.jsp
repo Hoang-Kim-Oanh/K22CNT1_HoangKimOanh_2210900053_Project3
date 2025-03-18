@@ -22,25 +22,25 @@
 </head>
 <body>
 
-<!-- Nhúng Header -->
+<!-- Header -->
 <jsp:include page="header.jsp"></jsp:include>
 
 <div class="d-flex">
-    <!-- Nhúng Sidebar -->
+    <!-- Sidebar -->
     <jsp:include page="sidebar.jsp"></jsp:include>
 
     <!-- Nội dung chính -->
     <div class="container-fluid p-4" style="margin-left: 250px;">
         <h2 class="text-center mb-4">Quản Lý Giảng Viên</h2>
 
-        <%-- Hiển thị thông báo lỗi nếu có --%>
+        <!-- Hiển thị thông báo lỗi -->
         <% if (request.getAttribute("error") != null) { %>
-        <div class="alert alert-danger" role="alert">
+        <div class="alert alert-danger">
             <%= request.getAttribute("error") %>
         </div>
         <% } %>
 
-        <%-- Form Thêm & Cập Nhật Giảng Viên --%>
+        <!-- Form Thêm & Cập Nhật Giảng Viên -->
         <div class="card mb-4">
             <div class="card-header bg-primary text-white">Thêm / Cập Nhật Giảng Viên</div>
             <div class="card-body">
@@ -64,13 +64,17 @@
                         <label class="form-label">Chuyên Môn</label>
                         <input type="text" class="form-control" name="chuyenMon" id="chuyenMon" required>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mã Khóa Học</label>
+                        <input type="text" class="form-control" name="maKhoaHoc" id="maKhoaHoc" required>
+                    </div>
                     <button type="submit" class="btn btn-success">Lưu</button>
                     <button type="reset" class="btn btn-secondary">Làm Mới</button>
                 </form>
             </div>
         </div>
 
-        <%-- Danh sách Giảng Viên --%>
+        <!-- Danh sách Giảng Viên -->
         <table class="table table-striped table-hover">
             <thead class="table-dark">
             <tr>
@@ -79,6 +83,7 @@
                 <th>Email</th>
                 <th>Số Điện Thoại</th>
                 <th>Chuyên Môn</th>
+                <th>Mã Khóa Học</th>
                 <th>Hành Động</th>
             </tr>
             </thead>
@@ -90,39 +95,36 @@
                     <td>${giangVien.email}</td>
                     <td>${giangVien.soDienThoai}</td>
                     <td>${giangVien.chuyenMon}</td>
+                    <td>${giangVien.maKhoaHoc}</td>
                     <td>
-                        <button class="btn btn-warning btn-sm" onclick="editGiangVien('${giangVien.maGiangVien}',
-                                '${giangVien.tenGiangVien}', '${giangVien.email}', '${giangVien.soDienThoai}', '${giangVien.chuyenMon}')">Sửa</button>
+                        <button class="btn btn-warning btn-sm"
+                                onclick="editGiangVien('${giangVien.maGiangVien}', '${giangVien.tenGiangVien}',
+                                        '${giangVien.email}', '${giangVien.soDienThoai}',
+                                        '${giangVien.chuyenMon}', '${giangVien.maKhoaHoc}')">Sửa</button>
                         <a href="giangvien?action=delete&maGiangVien=${giangVien.maGiangVien}"
-                           class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa không?')">Xóa</a>
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Bạn có chắc muốn xóa không?')">Xóa</a>
                     </td>
                 </tr>
             </c:forEach>
-            <c:if test="${empty danhSachGiangVien}">
-                <tr>
-                    <td colspan="6" class="text-center">Không có giảng viên nào trong hệ thống.</td>
-                </tr>
-            </c:if>
             </tbody>
         </table>
     </div>
 </div>
 
-<!-- Nhúng Footer -->
 <jsp:include page="footer.jsp"></jsp:include>
 
-<!-- JavaScript -->
 <script>
-    function editGiangVien(maGiangVien, tenGiangVien, email, soDienThoai, chuyenMon) {
+    function editGiangVien(maGiangVien, tenGiangVien, email, soDienThoai, chuyenMon, maKhoaHoc) {
         document.getElementById('maGiangVien').value = maGiangVien;
         document.getElementById('tenGiangVien').value = tenGiangVien;
         document.getElementById('email').value = email;
         document.getElementById('soDienThoai').value = soDienThoai;
         document.getElementById('chuyenMon').value = chuyenMon;
+        document.getElementById('maKhoaHoc').value = maKhoaHoc;
         document.getElementById('action').value = "update";
     }
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

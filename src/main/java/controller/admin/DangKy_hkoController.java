@@ -85,6 +85,8 @@ public class DangKy_hkoController extends HttpServlet {
     private void addDangKy(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+
+            //ket nôi đb
             Connection conn = getConnection();
             String sql = "INSERT INTO dangky_hko (HOTEN, SODIENTHOAI, TRANGTHAI, KHOAHOC, NGAYDANGKY) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);

@@ -13,6 +13,7 @@ public class HocVien_hko {
     private String lichHoc;
     private BigDecimal diemSo; // Đổi từ double -> BigDecimal
     private String matKhau;
+    private int maKhoaHoc;
 
     // Enum cho giới tính để đồng bộ với ENUM trong DB
     public enum GioiTinh {
@@ -33,6 +34,15 @@ public class HocVien_hko {
         this.lichHoc = lichHoc;
         this.diemSo = diemSo;
         this.matKhau = matKhau;
+        this.maKhoaHoc = maKhoaHoc;
+    }
+
+    public int getMaKhoaHoc() {
+        return maKhoaHoc;
+    }
+
+    public void setMaKhoaHoc(int maKhoaHoc) {
+        this.maKhoaHoc = maKhoaHoc;
     }
 
     // Getters và Setters

@@ -7,7 +7,7 @@
   <display-name>Hoang Kim Oanh</display-name>
 
   <welcome-file-list>
-    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>views/web/trangchu.jsp</welcome-file>
   </welcome-file-list>
   <resource-ref>
     <description>DB Connection</description>

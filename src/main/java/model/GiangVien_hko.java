@@ -6,6 +6,7 @@ public class GiangVien_hko {
     private String email;
     private String soDienThoai;
     private String chuyenMon;
+    private int maKhoaHoc;
 
     public GiangVien_hko() {
     }
@@ -16,6 +17,15 @@ public class GiangVien_hko {
         this.email = email;
         this.soDienThoai = soDienThoai;
         this.chuyenMon = chuyenMon;
+        this.maKhoaHoc = maKhoaHoc;
+    }
+
+    public int getMaKhoaHoc() {
+        return maKhoaHoc;
+    }
+
+    public void setMaKhoaHoc(int maKhoaHoc) {
+        this.maKhoaHoc = maKhoaHoc;
     }
 
     public int getMaGiangVien() {

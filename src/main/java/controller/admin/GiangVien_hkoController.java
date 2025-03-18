@@ -50,8 +50,7 @@ public class GiangVien_hkoController extends HttpServlet {
     private void getAllGiangVien(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         List<GiangVien_hko> danhSachGiangVien = new ArrayList<>();
-        try {
-            Connection conn = getConnection();
+        try (Connection conn = getConnection()) {
             String sql = "SELECT * FROM GiangVien_hko";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
@@ -63,36 +62,31 @@ public class GiangVien_hkoController extends HttpServlet {
                 giangVien.setEmail(rs.getString("Email"));
                 giangVien.setSoDienThoai(rs.getString("SoDienThoai"));
                 giangVien.setChuyenMon(rs.getString("ChuyenMon"));
+                giangVien.setMaKhoaHoc(rs.getInt("MaKhoaHoc")); // Thêm MaKhoaHoc
                 danhSachGiangVien.add(giangVien);
             }
-
-            rs.close();
-            pstmt.close();
-            conn.close();
 
             request.setAttribute("danhSachGiangVien", danhSachGiangVien);
             request.getRequestDispatcher("/views/admin/hko_quanlygiangvien.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ServletException("Lỗi khi lấy danh sách giảng viên", e);
+            request.setAttribute("error", "Lỗi khi lấy danh sách giảng viên.");
+            request.getRequestDispatcher("/views/error.jsp").forward(request, response);
         }
     }
 
     private void addGiangVien(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            Connection conn = getConnection();
-            String sql = "INSERT INTO GiangVien_hko (TenGiangVien, Email, SoDienThoai, ChuyenMon) VALUES (?, ?, ?, ?)";
+        try (Connection conn = getConnection()) {
+            String sql = "INSERT INTO GiangVien_hko (TenGiangVien, Email, SoDienThoai, ChuyenMon, MaKhoaHoc) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, request.getParameter("tenGiangVien"));
             pstmt.setString(2, request.getParameter("email"));
             pstmt.setString(3, request.getParameter("soDienThoai"));
             pstmt.setString(4, request.getParameter("chuyenMon"));
+            pstmt.setInt(5, Integer.parseInt(request.getParameter("maKhoaHoc"))); // Lấy MaKhoaHoc
 
             pstmt.executeUpdate();
-            pstmt.close();
-            conn.close();
-
             response.sendRedirect("giangvien");
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,20 +97,17 @@ public class GiangVien_hkoController extends HttpServlet {
 
     private void updateGiangVien(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            Connection conn = getConnection();
-            String sql = "UPDATE GiangVien_hko SET TenGiangVien=?, Email=?, SoDienThoai=?, ChuyenMon=? WHERE MaGiangVien=?";
+        try (Connection conn = getConnection()) {
+            String sql = "UPDATE GiangVien_hko SET TenGiangVien=?, Email=?, SoDienThoai=?, ChuyenMon=?, MaKhoaHoc=? WHERE MaGiangVien=?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, request.getParameter("tenGiangVien"));
             pstmt.setString(2, request.getParameter("email"));
             pstmt.setString(3, request.getParameter("soDienThoai"));
             pstmt.setString(4, request.getParameter("chuyenMon"));
-            pstmt.setInt(5, Integer.parseInt(request.getParameter("maGiangVien")));
+            pstmt.setInt(5, Integer.parseInt(request.getParameter("maKhoaHoc"))); // Update MaKhoaHoc
+            pstmt.setInt(6, Integer.parseInt(request.getParameter("maGiangVien")));
 
             pstmt.executeUpdate();
-            pstmt.close();
-            conn.close();
-
             response.sendRedirect("giangvien");
         } catch (Exception e) {
             e.printStackTrace();
@@ -127,16 +118,12 @@ public class GiangVien_hkoController extends HttpServlet {
 
     private void deleteGiangVien(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            Connection conn = getConnection();
+        try (Connection conn = getConnection()) {
             String sql = "DELETE FROM GiangVien_hko WHERE MaGiangVien=?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, Integer.parseInt(request.getParameter("maGiangVien")));
 
             pstmt.executeUpdate();
-            pstmt.close();
-            conn.close();
-
             response.sendRedirect("giangvien");
         } catch (Exception e) {
             e.printStackTrace();
